@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Circle — Stay close to the people who matter, slow as you like</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700&family=Caveat:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5efe3;
+    --cream-dark: #ebe2cf;
+    --paper: #faf6ec;
+    --ink: #2a241d;
+    --ink-soft: #4a4239;
+    --ink-faded: #8b7f6f;
+    --terracotta: #c0613a;
+    --terracotta-deep: #9a4a2a;
+    --sage: #7a8b6f;
+    --sage-deep: #5a6c50;
+    --gold: #c89a3e;
+    --line: #d8cdb6;
+    --line-soft: #e6dcc6;
+    --shadow: rgba(42, 36, 29, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Paper grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(139, 127, 111, 0.08) 1px, transparent 1px),
+      radial-gradient(circle at 70% 70%, rgba(139, 127, 111, 0.06) 1px, transparent 1.5px),
+      radial-gradient(circle at 50% 20%, rgba(139, 127, 111, 0.05) 1px, transparent 1px);
+    background-size: 4px 4px, 7px 7px, 11px 11px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(245, 239, 227, 0.85);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    box-shadow: 0 0 0 4px rgba(192, 97, 58, 0.15);
+  }
+  .nav-cta {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    border-radius: 100px;
+    transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--terracotta); }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 0 80px;
+    position: relative;
+  }
+
+  .hero-content {
+    max-width: 880px;
+  }
+
+  .eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--terracotta);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: var(--terracotta);
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 500;
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 36px;
+  }
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--terracotta);
+  }
+
+  .hero-sub {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin-bottom: 48px;
+    font-weight: 400;
+  }
+
+  /* Signup form */
+  .signup-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 100px;
+    padding: 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .signup-form:focus-within {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 4px rgba(192, 97, 58, 0.1);
+  }
+  .signup-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 14px 22px;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+  }
+  .signup-form input::placeholder { color: var(--ink-faded); }
+  .signup-form button {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 14px 26px;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .signup-form button:hover { background: var(--terracotta); }
+
+  .form-meta {
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+    color: var(--ink-faded);
+    margin-top: 16px;
+    margin-left: 12px;
+  }
+
+  /* Decorative ornament */
+  .hero-ornament {
+    position: absolute;
+    top: 50%;
+    right: -40px;
+    transform: translateY(-50%);
+    opacity: 0.06;
+    pointer-events: none;
+    font-family: 'Fraunces', serif;
+    font-size: 320px;
+    line-height: 0.8;
+    color: var(--terracotta);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* ============ DIVIDER ============ */
+  .divider {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--ink-faded);
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    position: relative;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--line), transparent);
+  }
+  .divider::before { left: 5%; }
+  .divider::after { right: 5%; }
+
+  /* ============ SECTIONS ============ */
+  section {
+    padding: 100px 0;
+    position: relative;
+  }
+
+  .section-eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5.5vw, 64px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 32px;
+    max-width: 760px;
+  }
+  h2 em { font-style: italic; color: var(--terracotta); font-weight: 400; }
+
+  .section-lede {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin-bottom: 56px;
+  }
+
+  /* ============ PROBLEM SECTION ============ */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .problem-text p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+  .problem-text p:first-of-type::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 600;
+    float: left;
+    line-height: 0.85;
+    margin: 6px 12px 0 0;
+    color: var(--terracotta);
+  }
+
+  .problem-quote {
+    background: var(--paper);
+    border-left: 3px solid var(--terracotta);
+    padding: 32px 36px;
+    border-radius: 4px;
+    position: sticky;
+    top: 100px;
+  }
+  .problem-quote-text {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .problem-quote-attr {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: var(--ink-faded);
+  }
+
+  /* ============ HOW IT WORKS ============ */
+  .how-bg { background: var(--paper); }
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    margin-top: 48px;
+  }
+
+  .principle {
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+  }
+
+  .principle-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--terracotta);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .principle-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .principle-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  /* ============ WHAT IT IS NOT ============ */
+  .not-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+  }
+  .not-list > div {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+  }
+  .not-list .not {
+    color: var(--ink-faded);
+    text-decoration: line-through;
+    text-decoration-color: var(--terracotta);
+    text-decoration-thickness: 2px;
+    padding-right: 24px;
+  }
+  .not-list .yes {
+    color: var(--ink);
+    font-style: italic;
+    padding-left: 24px;
+    border-left: 1px solid var(--line);
+  }
+
+  /* ============ MANIFESTO / QUOTE BLOCK ============ */
+  .manifesto-bg {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .manifesto-bg h2,
+  .manifesto-bg .section-lede {
+    color: var(--paper);
+  }
+  .manifesto-bg .section-eyebrow { color: var(--gold); }
+  .manifesto-bg h2 em { color: var(--gold); }
+
+  .manifesto-text {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(22px, 2.8vw, 28px);
+    line-height: 1.5;
+    color: var(--paper);
+    max-width: 780px;
+    margin-bottom: 32px;
+  }
+  .manifesto-text em { color: var(--gold); font-style: italic; }
+
+  /* ============ FAQ ============ */
+  .faq {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--line);
+    padding: 28px 0;
+  }
+  .faq-q {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+  }
+  .faq-q::-webkit-details-marker { display: none; }
+  .faq-q::after {
+    content: '+';
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--terracotta);
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+  details[open] .faq-q::after {
+    content: '−';
+  }
+  .faq-a {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    padding-top: 4px;
+    max-width: 640px;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    text-align: center;
+    padding: 120px 0;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--cream-dark) 100%);
+  }
+  .final-cta h2 {
+    margin: 0 auto 24px;
+  }
+  .final-cta .section-lede {
+    margin: 0 auto 48px;
+  }
+  .final-cta .signup-form {
+    margin: 0 auto;
+  }
+  .final-cta .form-meta {
+    text-align: center;
+    margin: 16px 0 0;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    background: var(--ink);
+    color: var(--cream-dark);
+    padding: 60px 0 32px;
+  }
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #3a342b;
+  }
+  .footer-tagline {
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    color: var(--gold);
+    max-width: 320px;
+    line-height: 1.3;
+  }
+  .footer-meta {
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--ink-faded);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer a { color: var(--cream-dark); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 28px;
+    border-radius: 100px;
+    font-size: 15px;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 200;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    pointer-events: none;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 800px) {
+    .container { padding: 0 24px; }
+    section { padding: 64px 0; }
+    .hero { padding: 100px 0 60px; min-height: auto; }
+    .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+    .problem-quote { position: static; }
+    .not-list { grid-template-columns: 1fr; }
+    .not-list .yes { border-left: none; padding-left: 0; padding-top: 12px; }
+    .not-list .not { padding-right: 0; padding-bottom: 0; }
+    .not-list > div { flex-direction: column; align-items: flex-start; gap: 4px; padding: 20px 0; }
+    .signup-form { flex-direction: column; border-radius: 16px; padding: 8px; }
+    .signup-form input { padding: 14px 18px; }
+    .signup-form button { padding: 16px; border-radius: 100px; }
+    .hero-ornament { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      Circle
+    </div>
+    <a href="#join" class="nav-cta">Get early access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-ornament">∼</div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="eyebrow">a new way to keep in touch</div>
+      <h1>Stay close to the<br>people who matter, <em>slow as you like</em>.</h1>
+      <p class="hero-sub">Circle is a quiet little app for sending voice notes to a handpicked group of 5–10 people. No texting marathons. No read receipts. No pressure to reply right away. Just a thoughtful way to stay in each other's lives.</p>
+      <form class="signup-form" id="hero-form">
+        <input type="email" placeholder="your email" required>
+        <button type="submit">Get early access</button>
+      </form>
+      <p class="form-meta">we'll only email you when there's actual news ✦</p>
+    </div>
+  </div>
+</header>
+
+<div class="divider">∼ &nbsp; the way friendship used to feel &nbsp; ∼</div>
+
+<!-- THE PROBLEM -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">why we built this</div>
+    <h2>Friendship became <em>another inbox</em>.</h2>
+    <div class="problem-grid">
+      <div class="problem-text">
+        <p>Somewhere along the way, keeping in touch turned into work. The group chat sits in your phone like a guilty second job. The voice notes you owe pile up. You see a meme that reminds you of someone, think "I should send this," and then don't, because by the time you do, it'll feel like you have to write a whole catch-up message.</p>
+        <p>So you don't reach out. They don't either. Months pass. And one day you realize you haven't actually talked to your best friend from college since the spring, and you don't know how their dog is, or whether their parents are okay, or what they're worried about.</p>
+        <p>That isn't because you stopped caring. It's because the tools we use for friendship were built for something else — strangers, shouting, scrolling. Not for the small handful of people who actually matter.</p>
+      </div>
+      <div class="problem-quote">
+        <p class="problem-quote-text">"I have hundreds of contacts and five real friends. I don't need an app for the contacts. I need an app for the five."</p>
+        <p class="problem-quote-attr">— what one of our early testers said</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-bg">
+  <div class="container">
+    <div class="section-eyebrow">how it works</div>
+    <h2>Built around <em>five quiet ideas</em>.</h2>
+    <p class="section-lede">Circle isn't trying to replace your messaging apps. It sits alongside them, doing one specific thing well: helping you stay close to a small handful of people without the maintenance.</p>
+    <div class="principles">
+      <div class="principle">
+        <div class="principle-num">i.</div>
+        <div class="principle-title">A circle of ten, no more</div>
+        <div class="principle-desc">You pick the people. Up to ten. The scarcity is the point — these are the ones who actually matter.</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">ii.</div>
+        <div class="principle-title">Voice, not text</div>
+        <div class="principle-desc">A 30-second voice note carries more warmth than a paragraph of text and takes a fifth of the time. Send one in your pajamas, in the car, on a walk.</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">iii.</div>
+        <div class="principle-title">No expectation of speed</div>
+        <div class="principle-desc">No read receipts. No "they're typing." No notifications about when you were last online. Reply tomorrow. Reply next week. The app is built to forgive.</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">iv.</div>
+        <div class="principle-title">Gentle reminders, not nags</div>
+        <div class="principle-desc">When it's been a while, Circle quietly nudges you. "It's been five weeks since you talked to Sarah." That's it. No streaks, no guilt, no pressure.</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">v.</div>
+        <div class="principle-title">Nobody else can see it</div>
+        <div class="principle-desc">No public profiles. No follower counts. No algorithm. Circle is private by design — your conversations stay between you and the people inside it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT IS NOT -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">what it isn't</div>
+    <h2>An app built by <em>not adding things</em>.</h2>
+    <p class="section-lede">The hardest part of designing Circle has been resisting the temptation to add features. Every "no" on this list was a deliberate choice.</p>
+    <div class="not-list">
+      <div><span class="not">Read receipts</span><span class="yes">silence is fine</span></div>
+      <div><span class="not">Streaks &amp; gamification</span><span class="yes">no streaks to lose</span></div>
+      <div><span class="not">Reaction emojis</span><span class="yes">use your words</span></div>
+      <div><span class="not">Public profiles</span><span class="yes">private by default</span></div>
+      <div><span class="not">Algorithmic feeds</span><span class="yes">chronological &amp; quiet</span></div>
+      <div><span class="not">Follower counts</span><span class="yes">a circle, not an audience</span></div>
+      <div><span class="not">Stories that disappear</span><span class="yes">notes that stay</span></div>
+      <div><span class="not">"People you may know"</span><span class="yes">people you actually know</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto-bg">
+  <div class="container">
+    <div class="section-eyebrow">a small manifesto</div>
+    <h2>Most apps want <em>more</em> of you. Circle wants less.</h2>
+    <p class="manifesto-text">We don't want you on Circle for hours a day. We want you on it for two minutes — long enough to send a voice note to one person you love — and then back to your life. The metric we care about isn't engagement. It's <em>did your friend feel heard this week</em>.</p>
+    <p class="manifesto-text">If we ever start chasing time-on-app, we will have failed.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="container" style="max-width: 800px;">
+    <div class="section-eyebrow" style="text-align: center;">questions, plainly answered</div>
+    <h2 style="text-align: center; margin: 0 auto 56px;">Anything else <em>on your mind?</em></h2>
+    <div class="faq">
+      <details class="faq-item">
+        <summary class="faq-q">When can I actually use this?</summary>
+        <div class="faq-a">We're building Circle right now. Sign up above and we'll email you the moment it's ready for early users. No spam, no marketing emails, no upsells — just one note when it's time.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Why only ten people?</summary>
+        <div class="faq-a">Because the average person has about 5 close friends and maybe 10 they'd want to keep close to. Past that, the relationships are different — they're acquaintances, colleagues, networked contacts. Circle isn't trying to handle those. We want to be excellent at the small group of people who matter most.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Is it free?</summary>
+        <div class="faq-a">Circle will be free for everyone, with an optional paid version for people who want extras like longer voice notes, custom backups, or birthday reminders. We are never going to sell ads, sell data, or do anything weird with your conversations. That's a hard line.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">What about my friends who don't use Circle?</summary>
+        <div class="faq-a">We're working on a way to send Circle voice notes to anyone via SMS or a simple web link, so your friends don't have to download anything to receive what you send. They'll just get a clean, private link they can listen to. (Whether they download Circle to reply is up to them.)</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">How is this different from Marco Polo or just texting voice notes?</summary>
+        <div class="faq-a">Marco Polo is video, which feels like work — most people don't want to record themselves on camera. Voice is lower friction. And texting voice notes through iMessage doesn't help with the real problem: remembering who you haven't talked to in a while, and feeling okay about reaching out without preamble. Circle's nudges, structure, and small circle are what make it different.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Who's behind this?</summary>
+        <div class="faq-a">A small team in Toronto. We started building it because we missed our friends and got tired of feeling guilty about the group chats we'd abandoned. We're building the app we wanted for ourselves.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="join">
+  <div class="container">
+    <div class="section-eyebrow">come along</div>
+    <h2>The first batch of <em>early users</em> goes out soon.</h2>
+    <p class="section-lede">Join the list. We'll email you the moment it's ready. That's all that happens.</p>
+    <form class="signup-form" id="footer-form">
+      <input type="email" placeholder="your email" required>
+      <button type="submit">Save my spot</button>
+    </form>
+    <p class="form-meta">small batches, no spam, just a heads-up when it's time ✦</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="color: var(--paper);">
+          <span class="logo-dot"></span>
+          Circle
+        </div>
+        <p class="footer-tagline" style="margin-top: 14px;">stay close to the people who matter, slow as you like</p>
+      </div>
+      <div style="display: flex; gap: 32px; font-size: 14px;">
+        <a href="#join">Early access</a>
+        <a href="mailto:hello@circle.app">Contact</a>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <span>© 2026 Circle · Made in Toronto</span>
+      <span>v0.1 · pre-launch</span>
+    </div>
+  </div>
+</footer>
+
+<!-- POST-SIGNUP MODAL -->
+<div class="signup-modal" id="signup-modal">
+  <div class="signup-modal-card">
+    <button class="signup-close" id="signup-close" aria-label="Close">×</button>
+
+    <!-- STEP 1: Welcome + question -->
+    <div class="signup-step" id="step-welcome">
+      <div class="signup-eyebrow">you're on the list</div>
+      <div class="signup-title">Thank you, <em>truly</em>.</div>
+      <p class="signup-body">We'll email you the moment Circle is ready — no marketing, no spam, just one note when it's time.</p>
+      <div class="signup-divider">∼</div>
+      <p class="signup-question-prompt">If you have 30 seconds, we'd love to know:</p>
+      <div class="signup-question">Who's the first person you'd want to<br>send a Circle voice note to, and why?</div>
+      <textarea class="signup-textarea" id="signup-answer" placeholder="my best friend Sarah — she lives in Vancouver now and I haven't really talked to her properly in months..." rows="5"></textarea>
+      <div class="signup-modal-actions">
+        <button class="btn-text" id="skip-question">Maybe later</button>
+        <button class="btn-primary-pill" id="submit-question">Send</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Thank you -->
+    <div class="signup-step" id="step-thanks" style="display: none;">
+      <div class="signup-eyebrow">received with care</div>
+      <div class="signup-title">That means something.</div>
+      <p class="signup-body">Stories like yours are why we're building this. We read every single one.</p>
+      <p class="signup-body" style="font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta); margin-top: 24px;">go reach out to them. it's been long enough.</p>
+      <button class="btn-primary-pill" id="close-thanks" style="margin-top: 32px;">Close</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Post-signup modal styles */
+  .signup-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 36, 29, 0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 24px;
+    animation: modalFadeIn 0.3s ease;
+  }
+  .signup-modal.active { display: flex; }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .signup-modal-card {
+    background: var(--paper);
+    max-width: 540px;
+    width: 100%;
+    padding: 48px 48px 40px;
+    border-radius: 8px;
+    position: relative;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    animation: cardSlideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  @keyframes cardSlideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .signup-close {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--ink-faded);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: background 0.15s, color 0.15s;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .signup-close:hover { background: var(--cream); color: var(--ink); }
+
+  .signup-eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+  }
+
+  .signup-title {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: -0.015em;
+  }
+  .signup-title em { font-style: italic; color: var(--terracotta); font-weight: 400; }
+
+  .signup-body {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  .signup-divider {
+    text-align: center;
+    color: var(--line);
+    margin: 28px 0 24px;
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+  }
+
+  .signup-question-prompt {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-faded);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .signup-question {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+  }
+
+  .signup-textarea {
+    width: 100%;
+    padding: 16px 18px;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    background: var(--cream);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink);
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-height: 100px;
+  }
+  .signup-textarea:focus {
+    outline: none;
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 4px rgba(192, 97, 58, 0.1);
+  }
+  .signup-textarea::placeholder {
+    color: var(--ink-faded);
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  .signup-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    gap: 16px;
+  }
+
+  .btn-text {
+    background: none;
+    border: none;
+    color: var(--ink-faded);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 12px 4px;
+    transition: color 0.15s;
+  }
+  .btn-text:hover { color: var(--ink); }
+
+  .btn-primary-pill {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary-pill:hover { background: var(--terracotta); }
+  .btn-primary-pill:active { transform: scale(0.98); }
+  .btn-primary-pill:disabled {
+    background: var(--cream-dark);
+    color: var(--ink-faded);
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 600px) {
+    .signup-modal-card { padding: 36px 28px 28px; }
+    .signup-title { font-size: 30px; }
+    .signup-question { font-size: 20px; }
+    .signup-modal-actions { flex-direction: column-reverse; align-items: stretch; gap: 8px; }
+    .btn-primary-pill { width: 100%; }
+    .btn-text { width: 100%; padding: 14px; }
+  }
+</style>
+
+<script>
+  // Form handling — replace with Formspree/ConvertKit/Mailchimp endpoint when ready
+  let lastSignupEmail = null;
+
+  document.querySelectorAll('.signup-form').forEach(form => {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = form.querySelector('input').value;
+      if (email && email.includes('@')) {
+        try {
+          const list = JSON.parse(localStorage.getItem('circle_signups') || '[]');
+          list.push({ email, timestamp: new Date().toISOString() });
+          localStorage.setItem('circle_signups', JSON.stringify(list));
+        } catch (e) {}
+        lastSignupEmail = email;
+        form.reset();
+        openSignupModal();
+      }
+    });
+  });
+
+  function openSignupModal() {
+    document.getElementById('step-welcome').style.display = 'block';
+    document.getElementById('step-thanks').style.display = 'none';
+    document.getElementById('signup-answer').value = '';
+    document.getElementById('signup-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      document.getElementById('signup-answer').focus();
+    }, 400);
+  }
+
+  function closeSignupModal() {
+    document.getElementById('signup-modal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('signup-close').addEventListener('click', closeSignupModal);
+  document.getElementById('skip-question').addEventListener('click', closeSignupModal);
+  document.getElementById('close-thanks').addEventListener('click', closeSignupModal);
+
+  // Close on backdrop click
+  document.getElementById('signup-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'signup-modal') closeSignupModal();
+  });
+
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('signup-modal').classList.contains('active')) {
+      closeSignupModal();
+    }
+  });
+
+  document.getElementById('submit-question').addEventListener('click', () => {
+    const answer = document.getElementById('signup-answer').value.trim();
+    if (!answer) return;
+    try {
+      const list = JSON.parse(localStorage.getItem('circle_responses') || '[]');
+      list.push({
+        email: lastSignupEmail,
+        answer,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('circle_responses', JSON.stringify(list));
+    } catch (e) {}
+    document.getElementById('step-welcome').style.display = 'none';
+    document.getElementById('step-thanks').style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
