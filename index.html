@@ -971,22 +971,47 @@
 </style>
 
 <script>
-  // Form handling — replace with Formspree/ConvertKit/Mailchimp endpoint when ready
+  // Web3Forms — free unlimited submissions, lands in lotu5ringz@gmail.com
+  const WEB3FORMS_KEY = '4c5cac25-726d-4bb4-901d-138e638cde1f';
+
   let lastSignupEmail = null;
 
+  async function sendToWeb3Forms(payload) {
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          ...payload
+        })
+      });
+      return res.ok;
+    } catch (err) {
+      console.error('Web3Forms error:', err);
+      return false;
+    }
+  }
+
   document.querySelectorAll('.signup-form').forEach(form => {
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const email = form.querySelector('input').value;
       if (email && email.includes('@')) {
-        try {
-          const list = JSON.parse(localStorage.getItem('circle_signups') || '[]');
-          list.push({ email, timestamp: new Date().toISOString() });
-          localStorage.setItem('circle_signups', JSON.stringify(list));
-        } catch (e) {}
         lastSignupEmail = email;
         form.reset();
         openSignupModal();
+
+        // Fire off submission in the background — don't block the modal
+        sendToWeb3Forms({
+          subject: 'New Circle early access signup',
+          from_name: 'Circle landing page',
+          email: email,
+          message: `New signup: ${email}`
+        });
       }
     });
   });
@@ -1023,20 +1048,21 @@
     }
   });
 
-  document.getElementById('submit-question').addEventListener('click', () => {
+  document.getElementById('submit-question').addEventListener('click', async () => {
     const answer = document.getElementById('signup-answer').value.trim();
     if (!answer) return;
-    try {
-      const list = JSON.parse(localStorage.getItem('circle_responses') || '[]');
-      list.push({
-        email: lastSignupEmail,
-        answer,
-        timestamp: new Date().toISOString()
-      });
-      localStorage.setItem('circle_responses', JSON.stringify(list));
-    } catch (e) {}
+
+    // Show the thanks step right away — don't make them wait on the network
     document.getElementById('step-welcome').style.display = 'none';
     document.getElementById('step-thanks').style.display = 'block';
+
+    // Send the story in the background
+    sendToWeb3Forms({
+      subject: 'Circle signup — story',
+      from_name: 'Circle landing page',
+      email: lastSignupEmail || 'unknown',
+      message: `Email: ${lastSignupEmail || 'unknown'}\n\nWho they'd voice-note first:\n${answer}`
+    });
   });
 </script>
 
