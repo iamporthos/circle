@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Circle — Try the demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700&family=Caveat:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5efe3;
+    --cream-dark: #ebe2cf;
+    --paper: #faf6ec;
+    --ink: #2a241d;
+    --ink-soft: #4a4239;
+    --ink-faded: #8b7f6f;
+    --terracotta: #c0613a;
+    --terracotta-deep: #9a4a2a;
+    --sage: #7a8b6f;
+    --sage-deep: #5a6c50;
+    --gold: #c89a3e;
+    --line: #d8cdb6;
+    --line-soft: #e6dcc6;
+    --shadow: rgba(42, 36, 29, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Paper grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(139, 127, 111, 0.08) 1px, transparent 1px),
+      radial-gradient(circle at 70% 70%, rgba(139, 127, 111, 0.06) 1px, transparent 1.5px),
+      radial-gradient(circle at 50% 20%, rgba(139, 127, 111, 0.05) 1px, transparent 1px);
+    background-size: 4px 4px, 7px 7px, 11px 11px;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(245, 239, 227, 0.85);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-inner {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--terracotta);
+  }
+  .demo-pill {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: var(--terracotta);
+    background: rgba(192, 97, 58, 0.08);
+    padding: 4px 14px;
+    border-radius: 100px;
+  }
+
+  /* ============ CONTAINER ============ */
+  .container {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 92px 24px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ INTRO SCREEN ============ */
+  .intro {
+    text-align: center;
+    padding: 60px 0 40px;
+    animation: fadeUp 0.6s ease-out;
+  }
+  .intro-eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+  }
+  .intro-title {
+    font-family: 'Fraunces', serif;
+    font-size: 42px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .intro-title em {
+    font-style: italic;
+    color: var(--terracotta);
+    font-weight: 400;
+  }
+  .intro-body {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 420px;
+    margin: 0 auto 32px;
+  }
+  .intro-cta {
+    background: var(--terracotta);
+    color: var(--paper);
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 16px 36px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .intro-cta:hover { background: var(--terracotta-deep); }
+  .intro-cta:active { transform: scale(0.98); }
+
+  /* ============ CIRCLE HOME ============ */
+  .circle-home {
+    display: none;
+    animation: fadeUp 0.6s ease-out;
+  }
+  .circle-home.active { display: block; }
+
+  .circle-header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding-top: 20px;
+  }
+  .circle-header-label {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    color: var(--ink-faded);
+    margin-bottom: 6px;
+  }
+  .circle-header-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .circle-header-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  /* Voice note cards */
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .note-card {
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    border-radius: 18px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+  }
+  .note-card:hover {
+    border-color: var(--terracotta);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px var(--shadow);
+  }
+  .note-card.playing {
+    border-color: var(--terracotta);
+    background: linear-gradient(135deg, var(--paper) 0%, #fdf4ea 100%);
+  }
+  .note-card.you {
+    background: transparent;
+    border: 1.5px dashed var(--line);
+    cursor: default;
+  }
+  .note-card.you:hover {
+    border-color: var(--line);
+    transform: none;
+    box-shadow: none;
+  }
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .avatar.sarah { background: #e8d4c0; color: #8b4a2a; }
+  .avatar.mom { background: #d9dcc4; color: #5a6c50; }
+  .avatar.ben { background: #e0cfb8; color: #8a6a3e; }
+  .avatar.you { background: transparent; border: 1.5px dashed var(--line); color: var(--ink-faded); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; }
+
+  .note-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .note-name {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .note-preview {
+    font-size: 13px;
+    color: var(--ink-faded);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .note-duration {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--ink-faded);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .play-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    flex-shrink: 0;
+    font-size: 12px;
+    transition: background 0.15s;
+  }
+  .note-card:hover .play-icon { background: var(--terracotta-deep); }
+  .note-card.playing .play-icon { background: var(--sage-deep); }
+
+  /* ============ THREADS & REPLIES ============ */
+  .thread {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .reply-btn {
+    align-self: flex-start;
+    margin-left: 32px;
+    background: transparent;
+    border: none;
+    color: var(--terracotta);
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .reply-btn:hover { background: rgba(192, 97, 58, 0.08); }
+  .reply-btn:disabled {
+    color: var(--ink-faded);
+    cursor: not-allowed;
+    background: transparent;
+  }
+
+  /* Soft prompt below the threads */
+  .prompt-line {
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-faded);
+    padding: 14px 16px;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .prompt-line.hidden { display: none; }
+  .prompt-arrow {
+    display: inline-block;
+    margin-right: 4px;
+    color: var(--terracotta);
+    font-style: normal;
+  }
+
+  /* Inline recorder — slides open under a card */
+  .inline-recorder {
+    margin-left: 32px;
+    background: var(--paper);
+    border: 1.5px dashed var(--terracotta);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    animation: fadeUp 0.3s ease-out;
+  }
+  .inline-recorder-label {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: var(--terracotta);
+    margin-bottom: 10px;
+  }
+  .inline-record-timer {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--terracotta);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 8px;
+    display: none;
+  }
+  .inline-record-timer.active { display: block; }
+  .inline-record-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(192, 97, 58, 0.3);
+    transition: transform 0.15s, background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+  }
+  .inline-record-btn:hover { background: var(--terracotta-deep); }
+  .inline-record-btn:active { transform: scale(0.95); }
+  .inline-record-btn.recording {
+    background: var(--terracotta-deep);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .inline-record-btn-inner {
+    width: 22px;
+    height: 22px;
+    background: var(--paper);
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+  .inline-record-btn.recording .inline-record-btn-inner {
+    border-radius: 4px;
+  }
+  .inline-record-hint {
+    font-size: 12px;
+    color: var(--ink-faded);
+  }
+  .inline-cancel {
+    background: transparent;
+    border: none;
+    color: var(--ink-faded);
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 10px;
+    text-decoration: underline;
+  }
+  .inline-cancel:hover { color: var(--ink); }
+
+  /* Inline playback state — review before sending */
+  .inline-review {
+    display: none;
+    background: linear-gradient(135deg, #fdf4ea 0%, var(--paper) 100%);
+    border: 1px solid var(--terracotta);
+    border-radius: 14px;
+    padding: 16px;
+    margin-left: 32px;
+    text-align: center;
+    animation: fadeUp 0.3s ease-out;
+  }
+  .inline-review.active { display: block; }
+  .inline-review-label {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    color: var(--terracotta);
+    margin-bottom: 10px;
+  }
+  .inline-review-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .inline-playback-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    border: none;
+    color: var(--paper);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .inline-playback-btn:hover { background: var(--terracotta-deep); }
+  .inline-playback-duration {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .inline-send-btn {
+    background: var(--sage-deep);
+    color: var(--paper);
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-right: 6px;
+  }
+  .inline-send-btn:hover { background: var(--sage); }
+  .inline-redo-btn {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    font-size: 12px;
+    padding: 9px 16px;
+    border-radius: 100px;
+    cursor: pointer;
+  }
+  .inline-redo-btn:hover { background: var(--cream-dark); }
+
+  /* The user's reply card — indented under the recipient's note */
+  .reply-card {
+    margin-left: 32px;
+    background: linear-gradient(135deg, #fdf4ea 0%, var(--paper) 100%);
+    border: 1px solid var(--terracotta);
+    border-radius: 14px;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.15s;
+  }
+  .reply-card:hover { transform: translateY(-1px); }
+  .reply-card.playing { background: linear-gradient(135deg, #fae7d2 0%, #fdf4ea 100%); }
+  .reply-card .avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--terracotta);
+    color: var(--paper);
+    font-family: 'Caveat', cursive;
+    font-size: 14px;
+  }
+  .reply-card .note-name { font-size: 15px; }
+  .reply-card .note-preview { font-size: 12px; }
+  .reply-card .play-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+  }
+  @keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 14px rgba(192, 97, 58, 0.3); }
+    50% { box-shadow: 0 4px 22px rgba(192, 97, 58, 0.5), 0 0 0 10px rgba(192, 97, 58, 0.1); }
+  }
+
+  /* Sent confirmation — soft banner that pops in after send */
+  .sent-confirmation {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(160%);
+    background: var(--sage-deep);
+    color: var(--paper);
+    padding: 14px 22px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    max-width: calc(100% - 48px);
+  }
+  .sent-confirmation.active { transform: translateX(-50%) translateY(0); }
+  .sent-confirmation-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .sent-confirmation-title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .sent-confirmation-sub {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 1px;
+  }
+
+  /* User's own note card (after they send) — legacy, kept for compatibility */
+  .avatar.you-avatar {
+    background: var(--terracotta);
+    color: var(--paper);
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  /* ============ MIC PERMISSION DENIED STATE ============ */
+  .mic-blocked {
+    background: rgba(192, 97, 58, 0.08);
+    border: 1px solid rgba(192, 97, 58, 0.25);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    display: none;
+  }
+  .mic-blocked.active { display: block; }
+  .mic-blocked strong { color: var(--terracotta); }
+
+  /* ============ FINAL CTA MODAL ============ */
+  .cta-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 36, 29, 0.55);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.3s ease-out;
+  }
+  .cta-modal.active { display: flex; }
+  .cta-modal-card {
+    background: var(--paper);
+    border-radius: 24px;
+    padding: 40px 32px 32px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    position: relative;
+    animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .cta-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    color: var(--ink-faded);
+    font-size: 22px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.15s;
+  }
+  .cta-close:hover { background: var(--cream-dark); color: var(--ink); }
+  .cta-eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--terracotta);
+    margin-bottom: 8px;
+  }
+  .cta-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.15;
+  }
+  .cta-title em { font-style: italic; color: var(--terracotta); font-weight: 400; }
+  .cta-body {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .cta-form {
+    display: flex;
+    gap: 8px;
+    background: var(--cream);
+    border: 1.5px solid var(--line);
+    border-radius: 100px;
+    padding: 6px;
+    transition: border-color 0.2s;
+  }
+  .cta-form:focus-within { border-color: var(--terracotta); }
+  .cta-form input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    padding: 10px 16px;
+    outline: none;
+  }
+  .cta-form input::placeholder { color: var(--ink-faded); }
+  .cta-form button {
+    background: var(--terracotta);
+    color: var(--paper);
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .cta-form button:hover { background: var(--terracotta-deep); }
+  .cta-meta {
+    font-size: 12px;
+    color: var(--ink-faded);
+    margin-top: 14px;
+  }
+  .cta-thanks { display: none; }
+  .cta-thanks.active { display: block; }
+
+  /* ============ ANIMATIONS ============ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ MOBILE ============ */
+  @media (max-width: 540px) {
+    .container { padding: 84px 18px 60px; }
+    .intro-title { font-size: 34px; }
+    .circle-header-title { font-size: 26px; }
+    .cta-title { font-size: 26px; }
+    .note-card { padding: 14px 16px; gap: 12px; }
+    .avatar { width: 44px; height: 44px; font-size: 18px; }
+    .note-name { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-dot"></span>
+      Circle
+    </a>
+    <div class="demo-pill">demo</div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ============ INTRO ============ -->
+  <div class="intro" id="intro">
+    <div class="intro-eyebrow">welcome to Maya's Circle</div>
+    <h1 class="intro-title">A taste of <em>Circle</em>.</h1>
+    <p class="intro-body">
+      You're stepping into a made-up Circle with three people in it.
+      Listen to what they sent. Record something back. See what Circle feels like — in 60 seconds, no signup.
+    </p>
+    <button class="intro-cta" id="enter-demo">Enter Maya's Circle →</button>
+  </div>
+
+  <!-- ============ CIRCLE HOME ============ -->
+  <div class="circle-home" id="circle-home">
+    <div class="circle-header">
+      <div class="circle-header-label">your Circle</div>
+      <h2 class="circle-header-title">3 voice notes <em>waiting for you</em></h2>
+    </div>
+
+    <div class="mic-blocked" id="mic-blocked">
+      <strong>Mic access blocked.</strong> You can still listen to the notes below — but to record one of your own, allow microphone access in your browser settings and refresh.
+    </div>
+
+    <!-- Notes from your circle — each is a thread with its own reply slot -->
+    <div class="notes-list">
+
+      <!-- SARAH thread -->
+      <div class="thread" data-thread="sarah">
+        <div class="note-card" data-audio="audio/sarah.mp3" data-name="Sarah" data-duration="0:32">
+          <div class="avatar sarah">S</div>
+          <div class="note-meta">
+            <div class="note-name">Sarah</div>
+            <div class="note-preview">"I miss our walks" · 2 hours ago</div>
+          </div>
+          <div class="note-duration">0:32</div>
+          <div class="play-icon">▶</div>
+        </div>
+        <button class="reply-btn" data-recipient="Sarah">↳ reply to Sarah</button>
+        <!-- Inline recorder + reply card injected here at runtime -->
+      </div>
+
+      <!-- MOM thread -->
+      <div class="thread" data-thread="mom">
+        <div class="note-card" data-audio="audio/mom.mp3" data-name="Mom" data-duration="0:18">
+          <div class="avatar mom">M</div>
+          <div class="note-meta">
+            <div class="note-name">Mom</div>
+            <div class="note-preview">"Just thinking about you" · yesterday</div>
+          </div>
+          <div class="note-duration">0:18</div>
+          <div class="play-icon">▶</div>
+        </div>
+        <button class="reply-btn" data-recipient="Mom">↳ reply to Mom</button>
+      </div>
+
+      <!-- BEN thread -->
+      <div class="thread" data-thread="ben">
+        <div class="note-card" data-audio="audio/ben.mp3" data-name="Ben" data-duration="0:45">
+          <div class="avatar ben">B</div>
+          <div class="note-meta">
+            <div class="note-name">Ben</div>
+            <div class="note-preview">"Did you see what Marco did?!" · 2 days ago</div>
+          </div>
+          <div class="note-duration">0:45</div>
+          <div class="play-icon">▶</div>
+        </div>
+        <button class="reply-btn" data-recipient="Ben">↳ reply to Ben</button>
+      </div>
+
+    </div>
+
+    <!-- Soft prompt below the threads -->
+    <div class="prompt-line" id="prompt-line">
+      <span class="prompt-arrow">↑</span> tap "reply" under whoever you want to send a voice note back to
+    </div>
+  </div>
+
+</div>
+
+<!-- Sent confirmation -->
+<div class="sent-confirmation" id="sent-confirmation">
+  <div class="sent-confirmation-icon">✓</div>
+  <div>
+    <div class="sent-confirmation-title">your note has been sent</div>
+    <div class="sent-confirmation-sub">take a listen — it's in your Circle now</div>
+  </div>
+</div>
+
+<!-- Final CTA modal -->
+<div class="cta-modal" id="cta-modal">
+  <div class="cta-modal-card">
+    <button class="cta-close" id="cta-close" aria-label="Close">×</button>
+
+    <div class="cta-step" id="cta-step-form">
+      <div class="cta-eyebrow">that's Circle</div>
+      <h3 class="cta-title">Want one of <em>your own</em>?</h3>
+      <p class="cta-body">
+        We're letting people in slowly, with care. Leave your email — we'll send you yours the moment it's ready.
+      </p>
+      <form class="cta-form" id="cta-form">
+        <input type="email" placeholder="your email" required id="cta-email">
+        <button type="submit">Save my spot</button>
+      </form>
+      <p class="cta-meta">no spam · no marketing · one note when it's time ✦</p>
+    </div>
+
+    <div class="cta-thanks" id="cta-step-thanks">
+      <div class="cta-eyebrow">you're on the list</div>
+      <h3 class="cta-title">Thank you, <em>truly</em>.</h3>
+      <p class="cta-body">
+        We'll be in touch when Circle is ready. In the meantime — go reach out to someone you've been meaning to. It's been long enough.
+      </p>
+      <p style="font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta); margin-top: 18px;">
+        — the Circle team
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Config =====
+  const WEB3FORMS_KEY = '4c5cac25-726d-4bb4-901d-138e638cde1f';
+
+  // ===== State =====
+  let currentlyPlayingAudio = null;
+  let currentlyPlayingCard = null;
+
+  // ===== Intro → Circle home =====
+  document.getElementById('enter-demo').addEventListener('click', () => {
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('circle-home').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ===== Play voice notes from the fake circle =====
+  document.querySelectorAll('.note-card[data-audio]').forEach(card => {
+    card.addEventListener('click', () => {
+      const src = card.dataset.audio;
+
+      // If this card is currently playing — stop it
+      if (currentlyPlayingCard === card && currentlyPlayingAudio) {
+        currentlyPlayingAudio.pause();
+        currentlyPlayingAudio = null;
+        card.classList.remove('playing');
+        card.querySelector('.play-icon').textContent = '▶';
+        currentlyPlayingCard = null;
+        return;
+      }
+
+      // Stop any other audio playing
+      stopAllAudio();
+
+      // Play this one
+      const audio = new Audio(src);
+      audio.play().catch(err => {
+        console.warn('Audio playback failed:', err);
+        alert('Voice note couldn\'t play — make sure audio/' + src.split('/').pop() + ' exists in the repo.');
+      });
+
+      card.classList.add('playing');
+      card.querySelector('.play-icon').textContent = '❚❚';
+      currentlyPlayingAudio = audio;
+      currentlyPlayingCard = card;
+
+      audio.addEventListener('ended', () => {
+        card.classList.remove('playing');
+        card.querySelector('.play-icon').textContent = '▶';
+        currentlyPlayingAudio = null;
+        currentlyPlayingCard = null;
+      });
+    });
+  });
+
+  function stopAllAudio() {
+    if (currentlyPlayingAudio) {
+      currentlyPlayingAudio.pause();
+      currentlyPlayingAudio = null;
+    }
+    if (currentlyPlayingCard) {
+      currentlyPlayingCard.classList.remove('playing');
+      currentlyPlayingCard.querySelector('.play-icon').textContent = '▶';
+      currentlyPlayingCard = null;
+    }
+    // Stop any reply-card audio too
+    document.querySelectorAll('.reply-card.playing').forEach(card => {
+      card.classList.remove('playing');
+      card.querySelector('.play-icon').textContent = '▶';
+    });
+    if (window._currentReplyAudio) {
+      window._currentReplyAudio.pause();
+      window._currentReplyAudio = null;
+    }
+    if (window._currentInlinePlayback) {
+      window._currentInlinePlayback.pause();
+      window._currentInlinePlayback = null;
+    }
+  }
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  // ===== Per-thread reply system =====
+  let hasSentAnyReply = false;
+  let activeRecording = null; // { thread, recorder, stream, chunks, startTime, timerInterval }
+
+  document.querySelectorAll('.reply-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const thread = btn.closest('.thread');
+      const recipient = btn.dataset.recipient;
+      // If there's already an inline recorder open anywhere, cancel it
+      cancelAnyActiveRecording();
+      openInlineRecorder(thread, recipient, btn);
+    });
+  });
+
+  function cancelAnyActiveRecording() {
+    document.querySelectorAll('.inline-recorder, .inline-review').forEach(el => el.remove());
+    document.querySelectorAll('.reply-btn').forEach(b => {
+      if (!b.disabled) b.style.display = '';
+    });
+    if (activeRecording) {
+      try {
+        if (activeRecording.recorder && activeRecording.recorder.state !== 'inactive') {
+          activeRecording.recorder.stop();
+        }
+        if (activeRecording.stream) {
+          activeRecording.stream.getTracks().forEach(t => t.stop());
+        }
+        if (activeRecording.timerInterval) clearInterval(activeRecording.timerInterval);
+      } catch (e) {}
+      activeRecording = null;
+    }
+  }
+
+  function openInlineRecorder(thread, recipient, replyBtn) {
+    // Hide the reply button (we'll show the recorder instead)
+    replyBtn.style.display = 'none';
+
+    const recorder = document.createElement('div');
+    recorder.className = 'inline-recorder';
+    recorder.innerHTML = `
+      <div class="inline-recorder-label">recording a reply to ${recipient}</div>
+      <div class="inline-record-timer">0:00</div>
+      <button class="inline-record-btn" aria-label="Record">
+        <div class="inline-record-btn-inner"></div>
+      </button>
+      <div class="inline-record-hint">tap to record · tap again to stop</div>
+      <button class="inline-cancel">cancel</button>
+    `;
+    thread.appendChild(recorder);
+
+    const recordBtn = recorder.querySelector('.inline-record-btn');
+    const timerEl = recorder.querySelector('.inline-record-timer');
+    const hintEl = recorder.querySelector('.inline-record-hint');
+    const cancelBtn = recorder.querySelector('.inline-cancel');
+
+    cancelBtn.addEventListener('click', () => {
+      cancelAnyActiveRecording();
+      replyBtn.style.display = '';
+    });
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordBtn.classList.contains('recording')) {
+        stopInlineRecording();
+      } else {
+        await startInlineRecording(thread, recipient, recorder, recordBtn, timerEl, hintEl, replyBtn);
+      }
+    });
+  }
+
+  async function startInlineRecording(thread, recipient, recorder, recordBtn, timerEl, hintEl, replyBtn) {
+    stopAllAudio();
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      let options = {};
+      if (MediaRecorder.isTypeSupported('audio/webm')) {
+        options = { mimeType: 'audio/webm' };
+      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        options = { mimeType: 'audio/mp4' };
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, options);
+      const chunks = [];
+
+      mediaRecorder.addEventListener('dataavailable', e => {
+        if (e.data.size > 0) chunks.push(e.data);
+      });
+
+      mediaRecorder.addEventListener('stop', () => {
+        const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const duration = (Date.now() - activeRecording.startTime) / 1000;
+        stream.getTracks().forEach(t => t.stop());
+
+        // Remove the recorder UI and show review UI
+        recorder.remove();
+        showInlineReview(thread, recipient, url, duration, replyBtn);
+
+        activeRecording = null;
+      });
+
+      activeRecording = {
+        thread,
+        recorder: mediaRecorder,
+        stream,
+        chunks,
+        startTime: Date.now(),
+        timerInterval: null
+      };
+
+      mediaRecorder.start();
+      recordBtn.classList.add('recording');
+      hintEl.textContent = 'tap to stop';
+      timerEl.classList.add('active');
+
+      activeRecording.timerInterval = setInterval(() => {
+        const elapsed = (Date.now() - activeRecording.startTime) / 1000;
+        timerEl.textContent = formatTime(elapsed);
+        if (elapsed >= 60) stopInlineRecording();
+      }, 100);
+    } catch (err) {
+      console.error('Mic access denied or unavailable:', err);
+      document.getElementById('mic-blocked').classList.add('active');
+      cancelAnyActiveRecording();
+    }
+  }
+
+  function stopInlineRecording() {
+    if (!activeRecording) return;
+    if (activeRecording.recorder && activeRecording.recorder.state !== 'inactive') {
+      activeRecording.recorder.stop();
+    }
+    if (activeRecording.timerInterval) {
+      clearInterval(activeRecording.timerInterval);
+      activeRecording.timerInterval = null;
+    }
+  }
+
+  function showInlineReview(thread, recipient, audioURL, duration, replyBtn) {
+    const review = document.createElement('div');
+    review.className = 'inline-review active';
+    review.innerHTML = `
+      <div class="inline-review-label">your reply to ${recipient} — take a listen</div>
+      <div class="inline-review-row">
+        <button class="inline-playback-btn">▶</button>
+        <span class="inline-playback-duration">${formatTime(duration)}</span>
+      </div>
+      <button class="inline-send-btn">Send to ${recipient}</button>
+      <button class="inline-redo-btn">Re-record</button>
+    `;
+    thread.appendChild(review);
+
+    const playbackBtn = review.querySelector('.inline-playback-btn');
+    const sendBtn = review.querySelector('.inline-send-btn');
+    const redoBtn = review.querySelector('.inline-redo-btn');
+
+    let isPlaying = false;
+    let audio = null;
+    playbackBtn.addEventListener('click', () => {
+      if (isPlaying && audio) {
+        audio.pause();
+        isPlaying = false;
+        playbackBtn.textContent = '▶';
+        return;
+      }
+      stopAllAudio();
+      audio = new Audio(audioURL);
+      window._currentInlinePlayback = audio;
+      audio.play();
+      isPlaying = true;
+      playbackBtn.textContent = '❚❚';
+      audio.addEventListener('ended', () => {
+        isPlaying = false;
+        playbackBtn.textContent = '▶';
+      });
+    });
+
+    redoBtn.addEventListener('click', () => {
+      review.remove();
+      URL.revokeObjectURL(audioURL);
+      openInlineRecorder(thread, recipient, replyBtn);
+    });
+
+    sendBtn.addEventListener('click', () => {
+      sendBtn.textContent = 'sending...';
+      sendBtn.disabled = true;
+      sendBtn.style.opacity = '0.7';
+
+      setTimeout(() => {
+        review.remove();
+        replyBtn.disabled = true;
+        replyBtn.textContent = `✓ replied to ${recipient}`;
+        replyBtn.style.display = '';
+
+        // Create the reply card and append to thread
+        const replyCard = document.createElement('div');
+        replyCard.className = 'reply-card';
+        replyCard.innerHTML = `
+          <div class="avatar">you</div>
+          <div class="note-meta">
+            <div class="note-name">You → ${recipient}</div>
+            <div class="note-preview">just now</div>
+          </div>
+          <div class="note-duration">${formatTime(duration)}</div>
+          <div class="play-icon">▶</div>
+        `;
+        thread.appendChild(replyCard);
+
+        // Wire up playback on the reply card
+        let cardPlaying = false;
+        let cardAudio = null;
+        replyCard.addEventListener('click', () => {
+          if (cardPlaying && cardAudio) {
+            cardAudio.pause();
+            cardPlaying = false;
+            replyCard.classList.remove('playing');
+            replyCard.querySelector('.play-icon').textContent = '▶';
+            return;
+          }
+          stopAllAudio();
+          cardAudio = new Audio(audioURL);
+          window._currentReplyAudio = cardAudio;
+          cardAudio.play();
+          cardPlaying = true;
+          replyCard.classList.add('playing');
+          replyCard.querySelector('.play-icon').textContent = '❚❚';
+          cardAudio.addEventListener('ended', () => {
+            cardPlaying = false;
+            replyCard.classList.remove('playing');
+            replyCard.querySelector('.play-icon').textContent = '▶';
+          });
+        });
+
+        // Show the confirmation banner
+        document.getElementById('sent-confirmation').classList.add('active');
+        setTimeout(() => {
+          document.getElementById('sent-confirmation').classList.remove('active');
+        }, 3500);
+
+        // Hide the prompt line (no longer needed)
+        document.getElementById('prompt-line').classList.add('hidden');
+
+        // Scroll the new reply into view
+        setTimeout(() => {
+          replyCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+
+        // First reply triggers the CTA modal
+        if (!hasSentAnyReply) {
+          hasSentAnyReply = true;
+          setTimeout(() => {
+            document.getElementById('cta-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+          }, 4500);
+        }
+      }, 700);
+    });
+  }
+
+  // ===== CTA modal =====
+  document.getElementById('cta-close').addEventListener('click', closeCTA);
+
+  function closeCTA() {
+    document.getElementById('cta-modal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('cta-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'cta-modal') closeCTA();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('cta-modal').classList.contains('active')) {
+      closeCTA();
+    }
+  });
+
+  // ===== CTA form submission to Web3Forms =====
+  document.getElementById('cta-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('cta-email').value.trim();
+    if (!email || !email.includes('@')) return;
+
+    // Show thanks state immediately
+    document.getElementById('cta-step-form').style.display = 'none';
+    document.getElementById('cta-step-thanks').classList.add('active');
+
+    // Submit in the background
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: 'New Circle early access signup (from demo)',
+          from_name: 'Circle demo',
+          email: email,
+          message: `New signup from the demo page: ${email}`
+        })
+      });
+    } catch (err) {
+      console.error('Web3Forms submit failed:', err);
+    }
+  });
+</script>
+
+</body>
+</html>
