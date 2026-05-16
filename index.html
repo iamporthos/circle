@@ -4,6 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Circle — Stay close to the people who matter, slow as you like</title>
+<meta name="description" content="Circle is a quiet little app for sending voice notes to a handpicked group of 5–10 people. No texting marathons. No read receipts. Just a thoughtful way to stay in each other's lives.">
+<meta name="theme-color" content="#f5efe3">
+
+<!-- Open Graph (for iMessage, WhatsApp, Slack, etc) -->
+<meta property="og:title" content="Circle — Stay close to the people who matter, slow as you like">
+<meta property="og:description" content="A quiet little app for sending voice notes to a handpicked group of 5–10 people. No pressure to reply. Just a thoughtful way to stay in each other's lives.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://iamporthos.github.io/circle/">
+
+<!-- Twitter card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Circle — Stay close to the people who matter, slow as you like">
+<meta name="twitter:description" content="A quiet little app for voice notes to the 5–10 people who actually matter. No read receipts. No pressure.">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700&family=Caveat:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -107,8 +121,49 @@
     letter-spacing: 0.02em;
     border-radius: 100px;
     transition: background 0.15s;
+    white-space: nowrap;
   }
   .nav-cta:hover { background: var(--terracotta); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .nav-demo-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-demo-link:hover { color: var(--terracotta); }
+
+  @media (max-width: 600px) {
+    .nav-inner {
+      padding: 14px 18px;
+    }
+    .logo {
+      font-size: 19px;
+    }
+    .nav-links {
+      gap: 14px;
+    }
+    .nav-demo-link {
+      font-size: 13px;
+    }
+    .nav-cta {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+  @media (max-width: 380px) {
+    .nav-demo-link {
+      display: none;
+    }
+  }
 
   /* ============ HERO ============ */
   .hero {
@@ -568,8 +623,8 @@
       <span class="logo-dot"></span>
       Circle
     </div>
-    <div style="display: flex; align-items: center; gap: 18px;">
-      <a href="demo.html" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink-soft); text-decoration: none; transition: color 0.15s;" onmouseover="this.style.color='var(--terracotta)'" onmouseout="this.style.color='var(--ink-soft)'">Try the demo</a>
+    <div class="nav-links">
+      <a href="demo.html" class="nav-demo-link">Try the demo</a>
       <a href="#join" class="nav-cta">Get early access</a>
     </div>
   </div>

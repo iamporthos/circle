@@ -4,6 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Circle — Try the demo</title>
+<meta name="description" content="A 60-second taste of Circle. Listen to voice notes from a made-up circle, record a reply, and feel what it's like.">
+<meta name="theme-color" content="#f5efe3">
+<meta property="og:title" content="Circle — Try the demo">
+<meta property="og:description" content="A 60-second taste of Circle. Listen to voice notes, record a reply, and feel what staying close should feel like.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://iamporthos.github.io/circle/demo.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700&family=Caveat:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -736,13 +742,13 @@
 
       <!-- SARAH thread -->
       <div class="thread" data-thread="sarah">
-        <div class="note-card" data-audio="audio/sarah.mp3" data-name="Sarah" data-duration="0:32">
+        <div class="note-card" data-audio="audio/sarah.mp3" data-name="Sarah" data-duration="0:09">
           <div class="avatar sarah">S</div>
           <div class="note-meta">
             <div class="note-name">Sarah</div>
             <div class="note-preview">"I miss our walks" · 2 hours ago</div>
           </div>
-          <div class="note-duration">0:32</div>
+          <div class="note-duration">0:09</div>
           <div class="play-icon">▶</div>
         </div>
         <button class="reply-btn" data-recipient="Sarah">↳ reply to Sarah</button>
@@ -751,13 +757,13 @@
 
       <!-- MOM thread -->
       <div class="thread" data-thread="mom">
-        <div class="note-card" data-audio="audio/mom.mp3" data-name="Mom" data-duration="0:18">
+        <div class="note-card" data-audio="audio/mom.mp3" data-name="Mom" data-duration="0:09">
           <div class="avatar mom">M</div>
           <div class="note-meta">
             <div class="note-name">Mom</div>
             <div class="note-preview">"Just thinking about you" · yesterday</div>
           </div>
-          <div class="note-duration">0:18</div>
+          <div class="note-duration">0:09</div>
           <div class="play-icon">▶</div>
         </div>
         <button class="reply-btn" data-recipient="Mom">↳ reply to Mom</button>
@@ -765,13 +771,13 @@
 
       <!-- BEN thread -->
       <div class="thread" data-thread="ben">
-        <div class="note-card" data-audio="audio/ben.mp3" data-name="Ben" data-duration="0:45">
+        <div class="note-card" data-audio="audio/ben.mp3" data-name="Ben" data-duration="0:12">
           <div class="avatar ben">B</div>
           <div class="note-meta">
             <div class="note-name">Ben</div>
             <div class="note-preview">"Did you see what Marco did?!" · 2 days ago</div>
           </div>
-          <div class="note-duration">0:45</div>
+          <div class="note-duration">0:12</div>
           <div class="play-icon">▶</div>
         </div>
         <button class="reply-btn" data-recipient="Ben">↳ reply to Ben</button>
@@ -864,7 +870,11 @@
       const audio = new Audio(src);
       audio.play().catch(err => {
         console.warn('Audio playback failed:', err);
-        alert('Voice note couldn\'t play — make sure audio/' + src.split('/').pop() + ' exists in the repo.');
+        // Silently reset the card state so the user can tap again
+        card.classList.remove('playing');
+        card.querySelector('.play-icon').textContent = '▶';
+        currentlyPlayingAudio = null;
+        currentlyPlayingCard = null;
       });
 
       card.classList.add('playing');
